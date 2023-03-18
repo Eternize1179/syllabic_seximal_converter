@@ -2,70 +2,79 @@
 #include <string>
 #include <stack>
 #include <cmath>
+#include <random>
 
-std::string convertTo(int decimalValue);
+std::string convertTo(int& decimalValue);
 int convertFrom(const std::string& name);
 int log_base(const int& base, const int& argument);
+char menuDisplay();
+std::string randon_generator(const int& lower_bound, const int& upper_bound);
 
 int main()
 {
 	char selector = 'y';
-	std::string input;
+	std::string input, lower_bound, upper_bound;
 	int decimalValue;
-	bool menuDisplay = true;
 	std::cout<<"The numeral system is a base-6 system of letters in an alternating consonant-vowel pattern to render any numeral as a pronouncable word." <<std::endl;
-	do
+	while(selector != 'q' && selector != 'Q')
 	{
-		if(menuDisplay)
-		{
-			do
+			selector = menuDisplay();
+			switch(selector)
 			{
-				std::cout << "1) To convert a decimal number to numeral script enter 1.\n"
-						"2) To convert a numeral to a decimal number enter 2.\n"
-						"3) To quit enter q.\n";
-				std::cin >> selector;
-			} while (selector != '1' && selector != '2' && selector != 'q' && selector != 'Q');
-			menuDisplay = false;
-		}
+				case '1':
+					do
+					{
+						std::cout << "Enter decimal term.\n";
+						std::cin >> input;
+						decimalValue = stoi(input);
+						std::cout << convertTo(decimalValue) <<
+								"\nTo rerun, enter y.\n"
+								"To exit enter q.\n"
+								"To choose another option enter 4" << std::endl;
+						std::cin >> selector;
+					} while (selector =='y');
+					break;
 
-		if(selector== '1')
-		{
-			do
-			{
-				std::cout << "Enter decimal term.\n";
-				std::cin >> input;
-				decimalValue = stoi(input);
-				std::cout << convertTo(decimalValue) <<
-						"\nTo rerun, enter y.\n"
-						"To exit enter q.\n"
-						"To choose another option enter 3" << std::endl;
-				std::cin >> selector;
-			} while (selector =='y');
-		}
-		else if (selector == '2')
-		{
-			do
-			{
-				std::cout << "Enter numeral.\n";
-				std::cin >> input;
-				decimalValue = convertFrom(input);
-				std::cout << decimalValue <<
-						"\nTo rerun, enter y.\n"
-						"To exit enter q.\n"
-						"To choose another option enter 3" << std::endl;
-				std::cin >> selector;
-			} while (selector == 'y');
-		}
+				case '2':
+					do
+					{
+						std::cout << "Enter numeral.\n";
+						std::cin >> input;
+						decimalValue = convertFrom(input);
+						std::cout << decimalValue <<
+								"\nTo rerun, enter y.\n"
+								"To exit enter q.\n"
+								"To choose another option enter 4" << std::endl;
+						std::cin >> selector;
+					} while (selector == 'y');
+					break;
+				case '3':
+					do
+					{
+						do
+						{
+						std::cout << "Enter lower bound\n";
+						std::cin >> lower_bound;
+						std::cout << "Enter upper bound\n";
+						std::cin >> upper_bound;
+						int lower_bound_int = stoi(lower_bound);
+						int upper_bound_int = stoi(upper_bound);
+						
+						}while(lower_bound_int > upper_bound_int);
+						std::string output = randon_generator(lower_bound_int, upper_bound_int);
+						std::cout << output <<
+								"\nTo rerun, enter y.\n"
+								"To exit enter q.\n"
+								"To choose another option enter 4" << std::endl;
+						std::cin >> selector;
 
-		if(selector == '3')
-		{
-			menuDisplay = true;
+					} while (selector == 'y');
+					break;
+			}
 		}
-
-	}while(selector != 'q' && selector != 'Q');
 }
 
-std::string convertTo(int decimalValue)
+std::string convertTo(int& decimalValue)
 {
 	int size = log_base(6,decimalValue);
 	if(size < 2)
@@ -200,4 +209,28 @@ int convertFrom(const std::string& name)
 int log_base(const int& base, const int& argument)
 {
 	return ceil(log(argument)/log(base));
+}
+
+char menuDisplay()
+{
+	char selector;
+	do
+	{
+		std::cout << "1) To convert a decimal number to numeral script enter 1.\n"
+					 "2) To convert a numeral to a decimal number enter 2.\n"
+					 "3) Generate a random numeral from set bounds\n"
+					 "q  To quit enter q.\n";
+			std::cin >> selector;
+	} while (selector != '1' && selector != '2' && selector != '3' && selector != 'q' && selector != 'Q');
+	return selector;
+
+}
+
+std::string randon_generator(const int& lower_bound, const int& upper_bound)
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> distrib(lower_bound, upper_bound);
+	int rand = distrib(gen);
+	return convertTo(rand);
 }
